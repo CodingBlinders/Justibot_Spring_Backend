@@ -15,8 +15,6 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
@@ -27,11 +25,12 @@ public class SecurityConfig {
 
     @Autowired
     private UserService userService;
-    @Autowired
-    private JwtAuthenticationEntryPoint point;
-    @Autowired
-    private JwtAuthenticationFilter filter;
 
+    @Autowired
+    private JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
+
+    @Autowired
+    private JwtAuthenticationFilter jwtAuthenticationFilter;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
@@ -42,27 +41,12 @@ public class SecurityConfig {
                         .requestMatchers("/authenticate", "/register", "/health", "/login").permitAll()
                         .anyRequest().authenticated()
                 )
-                .exceptionHandling(ex -> ex.authenticationEntryPoint(point))
-                .addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class)
+                .exceptionHandling(ex -> ex.authenticationEntryPoint(jwtAuthenticationEntryPoint))
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-//                .authenticationProvider(authenticationProvider())
                 .httpBasic(Customizer.withDefaults())
                 .build();
     }
-
-//    @Bean
-//    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-//
-//        http.csrf(AbstractHttpConfigurer::disable)
-//                .authorizeRequests().
-//                requestMatchers("/test").authenticated().requestMatchers("/auth/login").permitAll()
-//                .anyRequest()
-//                .authenticated()
-//                .and().exceptionHandling(ex -> ex.authenticationEntryPoint(point))
-//                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
-//        http.addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class);
-//        return http.build();
-//    }
 
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {

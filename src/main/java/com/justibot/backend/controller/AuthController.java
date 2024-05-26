@@ -4,6 +4,8 @@ import com.justibot.backend.model.JwtResponse;
 import com.justibot.backend.model.User;
 import com.justibot.backend.service.UserService;
 import com.justibot.backend.util.JwtHelper;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,17 +31,29 @@ public class AuthController {
     private Logger logger = LoggerFactory.getLogger(AuthController.class);
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody User request) {
+    public ResponseEntity<?> login(@RequestBody User request, HttpServletResponse response) {
         doAuthenticate(request.getUsername(), request.getPassword());
 
         UserDetails userDetails = userService.loadUserByUsername(request.getUsername());
         String token = jwtHelper.generateToken(userDetails);
 
-        JwtResponse response = JwtResponse.builder()
+        // Create a cookie and set the JWT token
+        Cookie cookie = new Cookie("jwtToken", token);
+        cookie.setHttpOnly(true);
+        cookie.setSecure(true);
+        cookie.setPath("/");
+        cookie.setMaxAge(7 * 24 * 60 * 60);
+
+        // Add the cookie to the response
+        response.addCookie(cookie);
+
+        JwtResponse jwtResponse = JwtResponse.builder()
                 .jwtToken(token)
                 .username(userDetails.getUsername()).build();
-        return new ResponseEntity<>(response, HttpStatus.OK);
+
+        return new ResponseEntity<>(jwtResponse, HttpStatus.OK);
     }
+
 
     private void doAuthenticate(String username, String password) {
         try {
