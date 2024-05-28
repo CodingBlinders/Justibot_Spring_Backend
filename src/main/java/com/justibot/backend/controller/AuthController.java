@@ -78,8 +78,6 @@ public class AuthController {
 
     @GetMapping("/hello")
     public String hello() {
-//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//        User user = (User) authentication.getPrincipal();
         return "Hello, world!";
     }
 
