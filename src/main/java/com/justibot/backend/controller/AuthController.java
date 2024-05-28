@@ -14,6 +14,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
@@ -75,7 +78,14 @@ public class AuthController {
 
     @GetMapping("/hello")
     public String hello() {
+//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//        User user = (User) authentication.getPrincipal();
         return "Hello, world!";
+    }
+
+    @GetMapping("/user")
+    public String getUserDetails(@AuthenticationPrincipal UserDetails userDetails) {
+        return "Authenticated user: " + userDetails.getUsername();
     }
 
     @GetMapping("/health")
