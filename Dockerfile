@@ -16,7 +16,7 @@ FROM openjdk:17-jdk-sli
 COPY --from=build /app/target/Backend-0.0.1-SNAPSHOT.jar ./app.jar
 
 # Expose the port the application runs on
-EXPOSE 8080
+EXPOSE 8081
 
 # Run the application
 ENTRYPOINT ["java", "-jar", "app.jar"]
