@@ -5,14 +5,11 @@ import com.justibot.backend.model.MessageResponse;
 import com.justibot.backend.repository.ChatRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.*;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.http.ResponseEntity;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -35,7 +32,7 @@ public class MessageService {
     public String forwardMessage(String chatId, String message, String UserId) {
         // Create the payload
         Map<String, String> payload = new HashMap<>();
-        payload.put("chatId", chatId);
+        payload.put("session_id", chatId);
         payload.put("message", message);
 
         // Set headers
@@ -46,15 +43,15 @@ public class MessageService {
         HttpEntity<Map<String, String>> requestEntity = new HttpEntity<>(payload, headers);
 
         // Send the request and get the response
-//        ResponseEntity<String> responseEntity = restTemplate.exchange(
-//                externalApiUrl,
-//                HttpMethod.POST,
-//                requestEntity,
-//                String.class
-//        );
+        ResponseEntity<String> responseEntity = restTemplate.exchange(
+                externalApiUrl,
+                HttpMethod.POST,
+                requestEntity,
+                String.class
+        );
 
-        String response = "dummy response";
-
+//        String response = "dummy response";
+        String response = responseEntity.getBody();
         Chat chat = chatRepository.findByChatId(chatId);
         if (chat == null) {
             chat = new Chat();
@@ -75,7 +72,7 @@ public class MessageService {
         chatRepository.save(chat);
 //        return response;
 
-        ResponseEntity<String> responseEntity = ResponseEntity.ok("dummy response");
+//        ResponseEntity<String> responseEntity = ResponseEntity.ok("dummy response");
         return responseEntity.getBody();
     }
 }
