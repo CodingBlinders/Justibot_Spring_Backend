@@ -60,7 +60,10 @@ public class MessageController {
             chatId = ChatIdGenerator.generateChatId();
         }
 
-        String response = messageService.forwardMessage(chatId, message, user.getId());
+        String messageEng = translationService.translateTextEng(message, "en");
+        System.out.println(messageEng);
+
+        String response = messageService.forwardMessage(chatId, messageEng, user.getId());
         System.out.println(response);
 //        String response = "hello";
         String responseSinhala = translationService.translateText(response, "si");

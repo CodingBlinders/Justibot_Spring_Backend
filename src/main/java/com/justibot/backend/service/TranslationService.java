@@ -59,4 +59,44 @@ public class TranslationService {
 
         return translatedText.toString();
     }
+
+    public String translateTextEng(String text, String en) {
+        List<String> targetLanguages = new ArrayList<>();
+        targetLanguages.add("en");
+
+        List<InputTextItem> content = new ArrayList<>();
+        content.add(new InputTextItem(text));
+
+        List<TranslatedTextItem> translations = client.translate(
+                targetLanguages,
+                content,
+                null,
+                "si",
+                TextType.PLAIN,
+                null,
+                ProfanityAction.NO_ACTION,
+                ProfanityMarker.ASTERISK,
+                false,
+                false,
+                null,
+                null,
+                null,
+                false
+        );
+
+        StringBuilder translatedText = new StringBuilder();
+        for (TranslatedTextItem translation : translations) {
+            for (Translation textTranslation : translation.getTranslations()) {
+                translatedText.append(textTranslation.getText());
+            }
+        }
+
+        return translatedText.toString();
+    }
+
+//    public String detectLanguage(String text) {
+//        client.getLanguages();
+//        DetectedLanguage detectedLanguage = client.detectLanguage(text).getDetectedLanguages().get(0);
+//        return detectedLanguage.getLanguage();
+//    }
 }
