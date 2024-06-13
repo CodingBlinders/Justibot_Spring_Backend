@@ -48,7 +48,7 @@ public class MessageController {
         return new ResponseEntity<>(messageResponse, HttpStatus.OK);
     }
 
-    @PostMapping(value = "/sendMessage/sinhala", produces = "application/json")
+    @PostMapping(value = "/sendSinMessage", produces = "application/json")
     public ResponseEntity<MessageResponse> sendMessageSinhala(@RequestBody MessageRequest messageRequest, @AuthenticationPrincipal UserDetails userDetails) {
         String chatId = messageRequest.getChatId();
         String message = messageRequest.getMessage();
@@ -71,4 +71,5 @@ public class MessageController {
         MessageResponse messageResponse = new MessageResponse(message, chatId, responseSinhala);
         return new ResponseEntity<>(messageResponse, HttpStatus.OK);
     }
+
 }

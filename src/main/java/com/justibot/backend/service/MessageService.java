@@ -70,9 +70,12 @@ public class MessageService {
         chat.getMessages().add(messageResponse);
 
         chatRepository.save(chat);
-//        return response;
+        String responseText = responseEntity.getBody();
 
-//        ResponseEntity<String> responseEntity = ResponseEntity.ok("dummy response");
-        return responseEntity.getBody();
+        assert responseText != null;
+        responseText = responseText.substring(1, responseText.length() - 1);
+        responseText = responseText.replace("\\n", "\n");
+
+        return responseText;
     }
 }
